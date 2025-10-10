@@ -5,7 +5,7 @@ Written by Anthony Johnson
 # THINGS TO ADD IN FUTURE UPDATES:
 - Add more exception handling
 - Add exception messages into the summary file
-- Account for multiple naming conflicts in one folder and increment filenames correctly
+- Account for multiple naming conflicts in one folder and increment filenames correctly (currently working on this in the beta version)
 - Add an option to specify keywords (like dates) (or wildcards) to enhance the programs ability to target and rename specific files
 - Add an option to choose how you want the files to be formatted (including adding the date/time they were created into the filename or numbered/incremented etc...)
 - Add an option to reject creating a summary file
