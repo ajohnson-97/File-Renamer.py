@@ -2,6 +2,10 @@
 # https://github.com/ajohnson-97/File-Renamer.py
 # Written by Anthony Johnson
 
+# BETA VERSION !! -- BUGS:
+# 1. File extensions are being renamed in TitleCase
+# 2. When a naming conflict arises, a NameValue occurs because the string was joined before being added to the list so it cant find the index of the file extension and change an immutable string object
+
 import os
 while True:
     try:
@@ -23,12 +27,23 @@ print()
 
 summary = "File Renaming Summary: \n"
 counter = 0
+increment = 0
+increment_format = f"({increment})"
 
 for file in os.listdir():
     if file == "File Renaming Summary.txt":
         pass
     elif file.endswith(file_extension):
+        #new_name = file.strip()
         new_name = delimiter_character.join(file.title().split())
+       #'''
+        if new_name in os.listdir():
+            increment += 1
+            temp_list = list(new_name)
+            i = temp_list[0].index(file_extension)
+            temp_list.insert(i, increment_format)
+            new_name = "".join(temp_list)
+        #'''
         if verbose:
             print(f"Renamed {file} to {new_name}\n")
         os.rename(file, new_name)
