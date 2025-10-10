@@ -2,6 +2,8 @@
 # https://github.com/ajohnson-97/File-Renamer.py
 # Written by Anthony Johnson
 
+# BUG TO FIX -- File extensions are being renamed in TitleCase
+
 import os
 while True:
     try:
