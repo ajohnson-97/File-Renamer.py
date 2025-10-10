@@ -14,4 +14,3 @@ Written by Anthony Johnson
 
 # BUGS TO FIX:
 1. File extensions are being renamed in TitleCase
-2. When a naming conflict arises, a NameValue occurs because the string was joined before being added to the list so it cant find the index of the file extension and change an immutable string object
