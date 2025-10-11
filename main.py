@@ -26,6 +26,7 @@ delimiter_character = input("Press enter to choose no character: ")
 verbose = input("\nPress 1 for verbose mode or 0 to skip: ")
 print()
 
+
 # ------------------------------------
 def formatted_timestamp(timestamp):
     underline = "=================================="
