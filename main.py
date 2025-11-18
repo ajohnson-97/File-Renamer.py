@@ -20,7 +20,6 @@ label_frame_border_color = "#A1A192"
 extension_list = []
 verbose = True
 
-
 # Functions
 def main_function():
     # Confirm that the user wants to run the program to rename the files (Yes returns True, No returns False)
@@ -187,7 +186,7 @@ root.iconphoto(True, root_icon)
 root.config(background=window_bg_color)
 
 # Logo on Screen
-logo = tk.PhotoImage(file="logo_black_dots_black_letters.png", width=250, height=145)
+logo = tk.PhotoImage(file="assets/logo_black_dots_black_letters.png", width=250, height=145)
 logo_label = tk.Label(root, image=logo, bg=window_bg_color)
 logo_label.pack()
 
