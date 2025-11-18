@@ -1,4 +1,4 @@
-# File-Renamer-GUI -- Rename files without whitespace, in TitleCase, based on file extension
+# File-Renamer-GUI -- Batch-rename files based on file extension.
 # https://github.com/ajohnson-97/File-Renamer.py
 # Written by Anthony Johnson
 
@@ -6,15 +6,11 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 from tkinter.scrolledtext import ScrolledText
 import os, datetime, time
+from styles import *
 
 # Allow the user to select a number of options to edit the file names and have separate functions for each process, and a way to process them one by one or reject them if they don't apply, could put functions in a different file to refer to, to clean up the main source code.
 # Re-factor code to be object-oriented to simplify the widget creation code, and put file editing functions in a separate file, but keep gui elements/functions in main source file. (To separate logic functions from gui elements)
 # Have a display message/pop-up if no files in the path contain the file extension
-
-# Colors
-window_bg_color = "#C7C5B2"
-text_box_color = "#EBEBEE"
-label_frame_border_color = "#A1A192"
 
 # Variables
 extension_list = []
@@ -132,13 +128,13 @@ def entry_box_delete():  # Clear the entry box when the clear button is pressed
 
 def filter_list_delete():  # Clear the list of search filters
     extension_list.clear()
-    extension_confirmation.config(text=extension_list)
+    extension_confirmation.config(text=','.join(extension_list))
 
 
 def filter_list_pop():  # Remove the last extension added to the list
     if len(extension_list): # Check that there is an extension in the list (True == not zero length)
         extension_list.pop()
-        extension_confirmation.config(text=extension_list)
+        extension_confirmation.config(text=','.join(extension_list))
 
 
 def file_path():  # Function to get/set the working directory
@@ -181,38 +177,38 @@ root.resizable(True, True)
 root.title("File-Renamer.py")
 root_icon = tk.PhotoImage(file="assets/icon.png")
 root.iconphoto(True, root_icon)
-root.config(background=window_bg_color)
+root.config(background=LightTheme.window_bg_color)
 
 # Logo on Screen
 logo = tk.PhotoImage(file="assets/logo_black_dots_black_letters.png", width=250, height=145)
-logo_label = tk.Label(root, image=logo, bg=window_bg_color)
+logo_label = tk.Label(root, image=logo, bg=LightTheme.window_bg_color)
 logo_label.pack()
 
-search_filter_entry = tk.Entry(root, bg=text_box_color, font=("verdana", 10))
+search_filter_entry = tk.Entry(root, bg=LightTheme.text_box_color, font=("verdana", 10))
 search_filter_entry.pack()
 
 # Path Button Image
 path_icon_large = tk.PhotoImage(file="assets/icon.png")
 path_icon = path_icon_large.subsample(24, 24)
-path_icon_button = tk.Button(root, image=path_icon, command=file_path, bg=window_bg_color, border=0)
+path_icon_button = tk.Button(root, image=path_icon, command=file_path, bg=LightTheme.window_bg_color, border=0)
 path_icon_button.pack()
 
 # Label Frames
-label_frame_path = tk.LabelFrame(root, text="Filters", bg=window_bg_color)
+label_frame_path = tk.LabelFrame(root, text="Filters", bg=LightTheme.window_bg_color)
 label_frame_path.pack(padx=20, pady=20, ipadx=50, ipady=50, expand=True)
 
 # Labels
-extension_confirmation = tk.Label(root, bg=window_bg_color, text="", font=("verdana", 10))
+extension_confirmation = tk.Label(root, bg=LightTheme.window_bg_color, text="", font=("verdana", 10))
 extension_confirmation.pack()
 
-path_confirmation = tk.Label(root, bg=window_bg_color, text="", font=("verdana", 10))
+path_confirmation = tk.Label(root, bg=LightTheme.window_bg_color, text="", font=("verdana", 10))
 path_confirmation.pack()
 
 # Buttons
 verbose_button_value = tk.IntVar()
 verbose_mode_checkbox = tk.Checkbutton(label_frame_path, text="Verbose", compound="left", font=("verdana", 10),
-                                       bg=window_bg_color, variable=verbose_button_value, onvalue=1, offvalue=0,
-                                       activebackground=window_bg_color, command=show_verbose_val)
+                                       bg=LightTheme.window_bg_color, variable=verbose_button_value, onvalue=1, offvalue=0,
+                                       activebackground=LightTheme.window_bg_color, command=show_verbose_val)
 verbose_button_value.set(1)  # Set the default state of the verbose button to be on
 verbose_mode_checkbox.pack()
 
@@ -222,11 +218,11 @@ search_filter_submission_button.pack()
 file_path_finder_button = tk.Button(root, text="Path", font=("verdana", 10), command=file_path)
 file_path_finder_button.pack()
 
-extension_confirmation_clear = tk.Button(root, bg=window_bg_color, text="Clear filters", font=("verdana", 10),
+extension_confirmation_clear = tk.Button(root, bg=LightTheme.window_bg_color, text="Clear filters", font=("verdana", 10),
                                          command=filter_list_delete)
 extension_confirmation_clear.pack()
 
-extension_confirmation_pop = tk.Button(root, bg=window_bg_color, text="Remove filter", font=("verdana", 10),
+extension_confirmation_pop = tk.Button(root, bg=LightTheme.window_bg_color, text="Remove filter", font=("verdana", 10),
                                        command=filter_list_pop)
 extension_confirmation_pop.pack()
 
@@ -235,8 +231,8 @@ filter_status_var = tk.IntVar()
 radio_button_options = ["None", "Apply Filters"]
 for index in range(len(radio_button_options)):
     radio_button = tk.Radiobutton(root, text=radio_button_options[index], font=("verdana", 10),
-                                  variable=filter_status_var, value=index, bg=window_bg_color,
-                                  activebackground=window_bg_color,
+                                  variable=filter_status_var, value=index, bg=LightTheme.window_bg_color,
+                                  activebackground=LightTheme.window_bg_color,
                                   command=filter_status_func)
     radio_button.pack(anchor="w")
 
@@ -253,40 +249,7 @@ root.bind("<Return>", return_key_bind)  # Bind the return key
 root.bind('<Button-1>', clear_focus)  # Bind the left mouse click to clear the window focus
 root.bind('<Escape>', quit_program)  # Bind the escape key to close the window and terminate the program
 
-root.mainloop()
-
-'''
-OLD ADD_EXTENSION FUNCTION - DEPRECATED
-
-def add_extension():
-    ext = search_filter_entry.get().strip() # Strip the whitespace from either end of the string
-
-    if ext: # If the user actually enters something (an empty string returns False)
-        if ext[0] == ".":
-            if ext in extension_list: # Check that the extension isn't already in the list (for single extension entries)
-                duplicate_entry_popup = messagebox.showinfo(title="Duplicate Entry", message="That filter has already been added to the list.")
-            else:
-                if " " in ext: # Multiple extensions entered in one submission (by checking for spaces in the string)
-                    extension_list_multiple_entry = ext.split() # Split the words/extensions into separate elements and store them in a list
-                    for single_entry in extension_list_multiple_entry: # Process each extension in the list to separate them into individual elements
-                        single_entry.strip() # Strip the whitespace from either end again, just in case the user entered two spaces or something (might not be necessary)
-                        if single_entry[0] == ".":
-                            if single_entry not in extension_list: # Check that an extension included in the multiple extension submission isn't already in the list (or duplicated in the multiple input entry)
-                                extension_list.append(single_entry)
-                            else: # Specify which extension has already been added since multiple were added at once, not needed for a single entry because you'll know what was a duplicate since you just entered it.
-                                duplicate_entry_popup = messagebox.showinfo(title="Duplicate Entry", message=f"{single_entry} has already been added to the list. Removing the duplicate entry(s)")
-                        else:
-                            invalid_input_popup = messagebox.showinfo(title="Format Error", message="File extensions must start with a period.")
-                    display_text = ", ".join(extension_list)
-                    extension_confirmation.config(text=display_text)
-                else:
-                    extension_list.append(ext) # Add the single submission to the list
-                    display_text = ", ".join(extension_list)
-                    extension_confirmation.config(text=display_text)
-        else:
-            invalid_input_popup = messagebox.showinfo(title="Format Error.", message="File extensions must start with a period.")
-    else:
-        invalid_input_popup = messagebox.showerror(title="Invalid Input", message="You didn't submit anything.")
-
-    entry_box_delete() 
-'''
+if __name__ == '__main__':
+    root.mainloop()
+else:
+    print('Run main.py directly, it is not a module.')
