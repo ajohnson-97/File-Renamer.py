@@ -7,6 +7,7 @@ from tkinter import messagebox, filedialog
 from tkinter.scrolledtext import ScrolledText
 import os, datetime, time
 from modules.styles import *
+from modules.widgets import *
 
 # Allow the user to select a number of options to edit the file names and have separate functions for each process, and a way to process them one by one or reject them if they don't apply, could put functions in a different file to refer to, to clean up the main source code.
 # Re-factor code to be object-oriented to simplify the widget creation code, and put file editing functions in a separate file, but keep gui elements/functions in main source file. (To separate logic functions from gui elements)
@@ -205,6 +206,10 @@ path_confirmation = tk.Label(root, bg=LightTheme.window_bg_color, text="", font=
 path_confirmation.pack()
 
 # Buttons
+
+new_button = MyButton(root, "Hello", layout="pack")
+
+
 verbose_button_value = tk.IntVar()
 verbose_mode_checkbox = tk.Checkbutton(label_frame_path, text="Verbose", compound="left", font=("verdana", 10),
                                        bg=LightTheme.window_bg_color, variable=verbose_button_value, onvalue=1, offvalue=0,
