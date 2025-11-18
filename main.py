@@ -21,7 +21,7 @@ extension_list = []
 verbose = True
 
 # Functions
-def main_function():
+def run_program():
     # Confirm that the user wants to run the program to rename the files (Yes returns True, No returns False)
     if messagebox.askyesno(title="Confirmation",
                            message='Click "OK" if you are ready to rename your files. If you are not ready then click "Cancel"'):
@@ -53,7 +53,7 @@ def return_key_bind(event):  # Check if Entry box is focused
     if root.focus_get() == search_filter_entry:
         add_extension()
     else:
-        main_function()
+        run_program()
 
 
 def clear_focus(event):  # Clear the window focus on left mouse click
@@ -76,8 +76,8 @@ def add_extension():
         messagebox.showerror(title="Invalid Input", message="You didn't submit anything.")
         return
 
-    except:  # Catch-all exception handler in case an exception is thrown and not accounted for
-        messagebox.showerror(title="Error", message="Something went wrong.")
+    except Exception as e:  # Catch-all exception handler in case an exception is thrown and not accounted for
+        messagebox.showerror(title="Error", message=f"Something went wrong: {e}")
         return
 
     finally:
@@ -136,11 +136,9 @@ def filter_list_delete():  # Clear the list of search filters
 
 
 def filter_list_pop():  # Remove the last extension added to the list
-    if len(extension_list) > 0:
+    if len(extension_list): # Check that there is an extension in the list (True == not zero length)
         extension_list.pop()
         extension_confirmation.config(text=extension_list)
-    else:
-        pass
 
 
 def file_path():  # Function to get/set the working directory
@@ -242,7 +240,7 @@ for index in range(len(radio_button_options)):
                                   command=filter_status_func)
     radio_button.pack(anchor="w")
 
-start_button = tk.Button(root, text="Start", font=("verdana", 10), command=main_function,
+start_button = tk.Button(root, text="Start", font=("verdana", 10), command=run_program,
                          padx=50)  # Run the main function to rename the files
 start_button.pack()
 
