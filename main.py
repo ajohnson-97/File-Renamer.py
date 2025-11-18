@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 from tkinter.scrolledtext import ScrolledText
 import os, datetime, time
-from styles import *
+from modules.styles import *
 
 # Allow the user to select a number of options to edit the file names and have separate functions for each process, and a way to process them one by one or reject them if they don't apply, could put functions in a different file to refer to, to clean up the main source code.
 # Re-factor code to be object-oriented to simplify the widget creation code, and put file editing functions in a separate file, but keep gui elements/functions in main source file. (To separate logic functions from gui elements)
