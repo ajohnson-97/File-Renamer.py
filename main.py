@@ -47,14 +47,14 @@ def run_program():
 
 
 def return_key_bind(event):  # Check if Entry box is focused
-    if root.focus_get() == search_filter_entry:
+    if root.focus_get() == ext_entry_field:
         add_extension()
     else:
         run_program()
 
 
 def clear_focus(event):  # Clear the window focus on left mouse click
-    if event.widget != search_filter_entry:
+    if event.widget != ext_entry_field:
         root.focus_set()
 
 
@@ -66,7 +66,7 @@ def quit_program(event):
 
 def add_extension():
     try:
-        ext_filter_input = search_filter_entry.get().strip()  # Get input from the user through the search filter box
+        ext_filter_input = ext_entry_field.get().strip()  # Get input from the user through the search filter box
         assert ext_filter_input  # Verify that the value isn't False, zero, an empty string or None
 
     except AssertionError:  # Handle empty input
@@ -119,23 +119,23 @@ def add_extension():
 
     # Update display
     display_text = ", ".join(extension_list)
-    extension_confirmation.config(text=display_text)
+    ext_display.config(text=display_text)
     entry_box_delete()  # Clear the text entry field after each entry
 
 
 def entry_box_delete():  # Clear the entry box when the clear button is pressed
-    search_filter_entry.delete(0, "end")
+    ext_entry_field.delete(0, "end")
 
 
 def filter_list_delete():  # Clear the list of search filters
     extension_list.clear()
-    extension_confirmation.config(text=','.join(extension_list))
+    ext_display.config(text=','.join(extension_list))
 
 
 def filter_list_pop():  # Remove the last extension added to the list
     if len(extension_list): # Check that there is an extension in the list (True == not zero length)
         extension_list.pop()
-        extension_confirmation.config(text=','.join(extension_list))
+        ext_display.config(text=','.join(extension_list))
 
 
 def file_path():  # Function to get/set the working directory
@@ -143,7 +143,7 @@ def file_path():  # Function to get/set the working directory
         path = filedialog.askdirectory()
         if os.path.exists(path):
             # os.chdir(path) UNCOMMENT WHEN READY TO START TESTING
-            path_confirmation.config(text=path)
+            path_display.config(text=path)
         else:
             messagebox.showerror(title="Error", message="That is not a valid path.")
     except TypeError:  # Handles when you close the file manager window without picking a path
@@ -180,74 +180,40 @@ root_icon = tk.PhotoImage(file="assets/icon.png")
 root.iconphoto(True, root_icon)
 root.config(background=LightTheme.window_bg_color)
 
-# Logo on Screen
-logo = tk.PhotoImage(file="assets/logo_black_dots_black_letters.png", width=250, height=145)
-logo_label = tk.Label(root, image=logo, bg=LightTheme.window_bg_color)
-logo_label.pack()
+# Photo Images
+logo_png = tk.PhotoImage(file="assets/main_app_logo.png")
+path_icon_file = tk.PhotoImage(file="assets/icon_small.png")
+#path_icon_resized = path_icon_large.subsample(24, 24)
 
-search_filter_entry = tk.Entry(root, bg=LightTheme.text_box_color, font=("verdana", 10))
-search_filter_entry.pack()
-
-# Path Button Image
-path_icon_large = tk.PhotoImage(file="assets/icon.png")
-path_icon = path_icon_large.subsample(24, 24)
-path_icon_button = tk.Button(root, image=path_icon, command=file_path, bg=LightTheme.window_bg_color, border=0)
-path_icon_button.pack()
-
-# Label Frames
-label_frame_path = tk.LabelFrame(root, text="Filters", bg=LightTheme.window_bg_color)
-label_frame_path.pack(padx=20, pady=20, ipadx=50, ipady=50, expand=True)
-
-# Labels
-extension_confirmation = tk.Label(root, bg=LightTheme.window_bg_color, text="", font=("verdana", 10))
-extension_confirmation.pack()
-
-path_confirmation = tk.Label(root, bg=LightTheme.window_bg_color, text="", font=("verdana", 10))
-path_confirmation.pack()
-
-# Buttons
-
-new_button = MyButton(root, "Hello", layout="pack")
-
+logo_label = MyLabel(image=logo_png, layout_kwargs={"row": 0, "column": 1, "pady": 25})
+ext_entry_field = MyEntry(root, layout_kwargs={"row": 1, "column": 0})
+path_icon_button = MyButton(image=path_icon_file, command=file_path, border=None, bg=LightTheme.window_bg_color, layout_kwargs={"row": 1, "column": 1})
+path_border_frame = MyLabelFrame(text="Directories", layout_kwargs={"padx": 20, "pady": 20, "ipadx": 50, "ipady": 50})
+ext_display = MyLabel(root)
+path_display = MyLabel(root)
 
 verbose_button_value = tk.IntVar()
-verbose_mode_checkbox = tk.Checkbutton(label_frame_path, text="Verbose", compound="left", font=("verdana", 10),
-                                       bg=LightTheme.window_bg_color, variable=verbose_button_value, onvalue=1, offvalue=0,
-                                       activebackground=LightTheme.window_bg_color, command=show_verbose_val)
+verbose_mode_checkbox = MyCheckButton(path_border_frame, text="Verbose", compound="left", variable=verbose_button_value, onvalue=1, offvalue=0, command=show_verbose_val)
 verbose_button_value.set(1)  # Set the default state of the verbose button to be on
-verbose_mode_checkbox.pack()
+ext_entry_button = MyButton(text="Submit", command=add_extension)
+path_button = MyButton(text="Path", command=file_path)
+ext_display_clear = MyButton(text="Clear filters", command=filter_list_delete)
+ext_display_remove = MyButton(text="Remove filter", command=filter_list_pop)
+start_button = MyButton(text="Start", command=run_program, padx=50)  # Run the main function to rename the files
 
-search_filter_submission_button = tk.Button(root, text="Submit", font=("verdana", 10), command=add_extension)
-search_filter_submission_button.pack()
-
-file_path_finder_button = tk.Button(root, text="Path", font=("verdana", 10), command=file_path)
-file_path_finder_button.pack()
-
-extension_confirmation_clear = tk.Button(root, bg=LightTheme.window_bg_color, text="Clear filters", font=("verdana", 10),
-                                         command=filter_list_delete)
-extension_confirmation_clear.pack()
-
-extension_confirmation_pop = tk.Button(root, bg=LightTheme.window_bg_color, text="Remove filter", font=("verdana", 10),
-                                       command=filter_list_pop)
-extension_confirmation_pop.pack()
-
-# Radio buttons
 filter_status_var = tk.IntVar()
 radio_button_options = ["None", "Apply Filters"]
-for index in range(len(radio_button_options)):
-    radio_button = tk.Radiobutton(root, text=radio_button_options[index], font=("verdana", 10),
-                                  variable=filter_status_var, value=index, bg=LightTheme.window_bg_color,
-                                  activebackground=LightTheme.window_bg_color,
+radio_button_row = 1
+for i in range(len(radio_button_options)):
+    radio_button = tk.Radiobutton(path_border_frame, text=radio_button_options[i], font=("verdana", 10),
+                                  variable=filter_status_var, value=i, bg=LightTheme.window_bg_color,
+                                  activebackground=LightTheme.window_bg_color, highlightthickness=0,
                                   command=filter_status_func)
-    radio_button.pack(anchor="w")
+    #radio_button.pack(anchor="w")
+    radio_button_row += 1
+    radio_button.grid(row=radio_button_row, column=0)
 
-start_button = tk.Button(root, text="Start", font=("verdana", 10), command=run_program,
-                         padx=50)  # Run the main function to rename the files
-start_button.pack()
-
-# Console Window
-console_window = ScrolledText(root, bg="black", fg="#00BB00", width="80", height="10")
-console_window.pack(expand=True)
+console_window = ScrolledText(root, bg="black", fg="#00BB00", width="80", height="5")
 
 # Key Bindings
 root.bind("<Return>", return_key_bind)  # Bind the return key
