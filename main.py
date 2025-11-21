@@ -33,6 +33,8 @@ def run_program():
     if messagebox.askokcancel(title="Confirmation",
                            message='Click "OK" if you are ready to rename your files. If you are not ready then click \
                                     "Cancel"'):
+        console_print(f" > Target Directory: {path_entry_box.get().strip()}")
+        console_print(" ========== BEGIN RENAMING PROCESS ==========")
         program_start_snapshot = time.perf_counter()
         """
         Content goes here
@@ -58,6 +60,7 @@ def run_program():
                 output fills the textbox
         """
         program_end_snapshot = time.perf_counter()
+        console_print(" ========== PROCESS COMPLETE ==========\n")
         program_runtime = program_end_snapshot - program_start_snapshot
         # (PUT AN IF STATEMENT HERE) to check if the program actually renamed any files, or have a check to make sure
         # that there's files in the path when they select it.
@@ -141,7 +144,7 @@ def add_extension():
 
             # Add it to both lists
             extension_list.append(ext)
-            console_print(f">Adding {ext} to the extension list")
+            console_print(f" > Adding {ext} to the extension list")
             seen_this_entry.add(ext)
 
         except ValueError as value_error:
@@ -165,14 +168,14 @@ def ext_entry_remove():  # Clear the entry box when the clear button is pressed
 
 def filter_list_delete():  # Clear the list of search filters
     if len(extension_list) > 0:
-        console_print(f">Clearing the extension list")
+        console_print(f" > Clearing the extension list")
     extension_list.clear()
     ext_display_list.config(text='')
 
 
 def filter_list_pop():  # Remove the last extension added to the list
     if len(extension_list): # Check that there is an extension in the list (True == not zero length)
-        console_print(f">Removing {extension_list[-1]} from the extension list")
+        console_print(f" > Removing {extension_list[-1]} from the extension list")
         extension_list.pop()
         ext_display_list.config(text=', '.join(extension_list))
 
@@ -182,7 +185,6 @@ def get_path_from_text():
             raise Exception
         else:
             if os.path.exists(path_entry_box.get().strip()):
-                console_print(f">Target Directory: {path_entry_box.get().strip()}")
                 return path_entry_box.get().strip()
             else:
                 messagebox.showerror(title="Error", message="Path is not valid")
@@ -199,7 +201,7 @@ def get_path_from_button():  # Function to get/set the working directory
             # os.chdir(path) UNCOMMENT WHEN READY TO START TESTING
             path_entry_box.delete(0, tk.END)
             path_entry_box.insert(0, path)
-            console_print(f">Target Directory: {path_entry_box.get().strip()}")
+            console_print(f" > Target Directory: {path_entry_box.get().strip()}")
         else:
             messagebox.showerror(title="Error", message="That is not a valid path.")
     except TypeError:  # Handles when you close the file manager window without picking a path
@@ -211,12 +213,12 @@ def show_verbose_val():  # Function to set the verbose value
     if verbose_button_value.get():
         verbose = True
         if path_entry_box.get():
-            console_print(f">Generating a log file in {path_entry_box.get()} directory.")
+            console_print(f" > Generating a log file in {path_entry_box.get()} directory.")
         else:
-            console_print(">Generating a log file")
+            console_print(" > Generating a log file")
     else:
         verbose = False
-        console_print(">Opted out of logging")
+        console_print(" > Opted out of logging")
     print(verbose, datetime.date.today())
 
 def set_placeholder_text(event):
@@ -241,7 +243,7 @@ def apply_filters():  # Function to apply search filters
         ext_display_remove.config(state=tk.DISABLED)
         ext_list_label.config(state=tk.DISABLED)
         ext_display_list.config(bg="lightgrey")
-        console_print(">Renaming all files")
+        console_print(" > Renaming all files")
     else:  # Filter By Extension
         ext_entry_label.config(state=tk.NORMAL)
         ext_entry_field.config(state=tk.NORMAL)
@@ -257,13 +259,18 @@ def apply_filters():  # Function to apply search filters
         ext_display_remove.config(state=tk.NORMAL)
         ext_list_label.config(state=tk.NORMAL)
         ext_display_list.config(bg=LightTheme.text_box_color)
-        console_print(">Filtering by extension")
+        console_print(" > Filtering by extension")
 
 def console_print(message):
     console_window.config(state=tk.NORMAL)      # enable editing
     console_window.insert(tk.END, message + "\n")
     console_window.see(tk.END)                  # auto-scroll to bottom
     console_window.config(state=tk.DISABLED)    # prevent user edits
+
+def return_key_path_entry(event):
+    path = get_path_from_text()
+    if path: # Don't print to the console if the returned value is 0 or None
+        console_print(f" > Target Directory: {path}")
 
 # Window Initialization
 root = tk.Tk()
@@ -282,14 +289,10 @@ path_icon_file = tk.PhotoImage(file="assets/icon_small.png")
 #path_icon_resized = path_icon_large.subsample(24, 24)
 
 logo_label = MyLabel(image=logo_png, layout_kwargs={"row": 0, "column": 0, "pady": 25})
-
 path_border_frame = MyLabelFrame(text="Directory", layout_kwargs={"row": 1, "column": 0, "padx": 50, "pady": 15,
                                                                   "ipadx": 10, "ipady": 5, "sticky": "w"})
 path_label = MyLabel(path_border_frame, text="Path:", layout_kwargs={"row": 0, "column": 0, "padx": 5})
-#path_display = MyLabel(path_border_frame, border=1, bg=LightTheme.text_box_color, relief=SUNKEN, width=50,
-#                       layout_kwargs={"row": 0, "column": 1, "padx": 5})
 path_entry_box = MyEntry(path_border_frame, width=50, layout_kwargs={"row": 0, "column": 1, "padx": 5})
-
 path_icon_button = MyButton(path_border_frame, image=path_icon_file, command=get_path_from_button, border=None,
                             bg=LightTheme.window_bg_color, layout_kwargs={"row": 0, "column": 2, "padx": 5})
 
@@ -300,7 +303,7 @@ verbose_mode_checkbox = MyCheckButton(path_border_frame, text="Generate a log fi
 verbose_button_value.set(1)  # Set the default state of the verbose button to be on
 
 filters_border_frame = MyLabelFrame(text="Apply To", layout_kwargs={"row": 2, "column": 0, "padx": 50, "pady": 15,
-                                                                    "ipadx": 10, "ipady": 10, "sticky": "w"})
+                                                                    "ipadx": 14, "ipady": 10, "sticky": "w"})
 ext_filter_status = tk.StringVar(value="disable")
 apply_all_radio_button = MyRadioButton(filters_border_frame, text="All Files", variable=ext_filter_status,
                                        value="disable", command=apply_filters, layout_kwargs={"row": 0, "column": 0,
@@ -322,7 +325,6 @@ ext_display_list = MyLabel(filters_border_frame, border=1, bg=LightTheme.text_bo
                            layout_kwargs={"row": 3, "column": 1, "padx": 5, "pady": 10})
 
 console_window = MyScrolledTextBox(layout_kwargs={"row": 3, "column": 0, "padx": 50, "pady": 15, "sticky": "w"})
-
 start_button = MyButton(text="Start", command=run_program, padx=50)  # Run the main function to rename the files
 
 # Key Bindings
@@ -333,33 +335,26 @@ root.bind('<Escape>', quit_program)  # Bind the escape key to close the window a
 # Bind events to the existing entry widget
 ext_entry_field.bind("<FocusIn>", remove_placeholder_text)
 ext_entry_field.bind("<FocusOut>", set_placeholder_text)
-console_window.bind("<Key>", lambda e: "break")
-
+console_window.bind("<Key>", lambda x: "break")
+path_entry_box.bind("<Return>", return_key_path_entry)
+console_print("\n ========== FILE RENAMER ==========\n")
 # Set the placeholder initially
 set_placeholder_text(None)
 apply_filters()
 
-console_print("========== BEGIN RENAME PROCESS ==========")
-for i in range(20):
-    console_print(' >Renaming file "file" -> "newfile" \
-                    \n >Skipping over file "badfile" ...')
-console_print("========== PROCESS COMPLETE ==========")
-
-
 
 '''
-console_print("========== BEGIN RENAME PROCESS ==========")
-console_print(f"Target directory: {get_current_path()}")
-console_print("")
+console_print("\n ========== BEGIN RENAME PROCESS ==========\n")
+console_print(f" > Target directory: {get_current_path()}")
 
 for filename in os.listdir(get_current_path()):
     if should_process(filename):
         new_name = rename_file(filename)
-        console_print(f"Renamed: {filename} → {new_name}")
+        console_print(f" > Renamed: {filename} → {new_name}")
     else:
-        console_print(f"Skipped: {filename}")
+        console_print(f" > Skipped: {filename}")
 
-console_print("========== PROCESS COMPLETE ==========")
+console_print(" ========== PROCESS COMPLETE ==========")
 '''
 
 if __name__ == '__main__':
