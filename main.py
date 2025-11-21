@@ -20,6 +20,7 @@ import modules.styles
 extension_list = []
 verbose = True
 placeholder_text = "  Separate by space for multiple entries"
+path_placeholder_text = "  Select the folder you want to rename files under"
 
 # Functions
 def run_program():
@@ -209,6 +210,7 @@ def get_path_from_button():  # Function to get/set the working directory
         assert path
         if os.path.exists(path):
             # os.chdir(path) UNCOMMENT WHEN READY TO START TESTING
+            path_entry_box.config(fg="black")
             path_entry_box.delete(0, tk.END)
             path_entry_box.insert(0, path)
             console_print(f" > Target Directory: {path_entry_box.get().strip()}")
@@ -231,17 +233,29 @@ def show_verbose_val():  # Function to set the verbose value
         console_print(" > Opted out of logging")
     print(verbose, datetime.date.today())
 
-def set_placeholder_text(event):
+def set_ext_placeholder_text(event):
     """Set the placeholder text if the entry is empty."""
     if ext_entry_field.get() == "":
         ext_entry_field.insert(0, placeholder_text)
         ext_entry_field.config(fg='gray')  # Placeholder color
 
-def remove_placeholder_text(event):
+def remove_ext_placeholder_text(event):
     """Remove the placeholder text when the entry is focused."""
     if ext_entry_field.get() == placeholder_text:
         ext_entry_field.delete(0, tk.END)
         ext_entry_field.config(fg='black')  # Change text color when the user types
+
+def set_path_placeholder_text(event):
+    """Set the placeholder text if the entry is empty."""
+    if path_entry_box.get() == "":
+        path_entry_box.insert(0, path_placeholder_text)
+        path_entry_box.config(fg='gray')  # Placeholder color
+
+def remove_path_placeholder_text(event):
+    """Remove the placeholder text when the entry is focused."""
+    if path_entry_box.get() == path_placeholder_text:
+        path_entry_box.delete(0, tk.END)
+        path_entry_box.config(fg='black')  # Change text color when the user types
 
 def apply_filters():  # Function to apply search filters
     """Enable/disable extension filter fields based on radio selection."""
@@ -359,14 +373,17 @@ root.bind("<Button-1>", clear_focus, add="+")
 root.bind('<Escape>', quit_program)  # Bind the escape key to close the window and terminate the program
 
 # Bind events to the existing entry widget
-ext_entry_field.bind("<FocusIn>", remove_placeholder_text)
-ext_entry_field.bind("<FocusOut>", set_placeholder_text)
+ext_entry_field.bind("<FocusIn>", remove_ext_placeholder_text)
+ext_entry_field.bind("<FocusOut>", set_ext_placeholder_text)
 console_window.bind("<Key>", lambda x: "break")
 path_entry_box.bind("<Return>", return_key_path_entry)
+path_entry_box.bind("<FocusIn>", remove_path_placeholder_text)
+path_entry_box.bind("<FocusOut>", set_path_placeholder_text)
 
 console_print("\n ========== FILE RENAMER ==========\n")
 # Set the placeholder initially
-set_placeholder_text(None)
+set_ext_placeholder_text(None)
+set_path_placeholder_text(None)
 apply_filters()
 
 # ======================================================================================================================
