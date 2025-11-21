@@ -314,17 +314,28 @@ logo_png = tk.PhotoImage(file="assets/main_app_logo.png")
 path_icon_file = tk.PhotoImage(file="assets/icon_small.png")
 #path_icon_resized = path_icon_large.subsample(24, 24)
 
+window_style_ttk = ttk.Style()
+window_style_ttk.theme_use('clam')
+window_style_ttk.configure('TNotebook.tab', background=LightTheme.window_bg_color)
+# 1. Notebook background (the grey bar behind tabs)
+window_style_ttk.configure("TNotebook", background=LightTheme.window_bg_color, borderwidth=0)
+# 2. Notebook "client area" (where tabs display content)
+window_style_ttk.configure("TNotebook.Client", background=LightTheme.window_bg_color)
+# Tab background (normal and selected)
+window_style_ttk.configure("TNotebook.Tab", background=LightTheme.window_bg_color, padding=[10, 5])  # ensures the
+                                                                                               # colored area is visible
+window_style_ttk.map("TNotebook.Tab", background=[("selected", LightTheme.window_bg_color),
+                                                  ("active", LightTheme.window_bg_color)])
+
 window = ttk.Notebook(root)
-tab1 = tk.Frame(window)
-tab2 = tk.Frame(window)
-tab3 = tk.Frame(window)
-window.add(tab1,text="Main")
+tab1 = tk.Frame(window, bg=LightTheme.window_bg_color)
+tab2 = tk.Frame(window, bg=LightTheme.window_bg_color)
+tab3 = tk.Frame(window, bg=LightTheme.window_bg_color)
+window.add(tab1,text="Home")
 window.add(tab2,text="Documentation")
 window.add(tab3,text="Credits")
-window.pack(expand=True,fill="both")
-#window.grid(row=0, column=0)
-#, expand=True,fill="both")  #Expand = expand to fill any space not otherwise used. Fill = fill space on x and
-                                      # y axis
+window.pack(expand=True,fill="both") # Expand fills any space not otherwise used, fill, fills the space on x-y axis
+
 
 logo_label = MyLabel(tab1, image=logo_png, layout_kwargs={"row": 0, "column": 0, "pady": 25})
 path_border_frame = MyLabelFrame(tab1, text="Directory", layout_kwargs={"row": 1, "column": 0, "padx": 50, "pady": 15,
