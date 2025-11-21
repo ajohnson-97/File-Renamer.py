@@ -1,5 +1,7 @@
 from tkinter.scrolledtext import ScrolledText
 
+from wx.lib.agw.speedmeter import styles
+
 from .styles import *
 import tkinter as tk
 
@@ -83,7 +85,7 @@ class MyScrolledTextBox(ScrolledText, Positioning):
         defaults = {
             "width": "64",
             "height": "5",
-            "font": ("Consolas", 10),
+            "font": (LightTheme.console_font_style, LightTheme.font_size),
             "bg": "black",
             "fg": "#00BB00",
             "insertbackground": "#00BB00",

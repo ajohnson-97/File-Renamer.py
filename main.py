@@ -4,6 +4,7 @@
 
 import tkinter as tk
 from tkinter import messagebox, filedialog
+from tkinter import ttk
 from tkinter.constants import SUNKEN
 from tkinter.scrolledtext import ScrolledText
 import os, datetime, time
@@ -18,6 +19,7 @@ import modules.styles
 # Global Variables
 extension_list = []
 verbose = True
+placeholder_text = "  Separate by space for multiple entries"
 
 # Functions
 def run_program():
@@ -73,8 +75,7 @@ def return_key_bind(event):  # Check if Entry box is focused
     if root.focus_get() == ext_entry_field:
         add_extension()
     elif root.focus_get() == path_entry_box:
-        path = path_entry_box.get()
-        print(path)
+        get_path_from_text()
     else:
         run_program()
 
@@ -103,7 +104,12 @@ def quit_program(event):
 def add_extension():
     try:
         ext_filter_input = ext_entry_field.get().strip()  # Get input from the user through the search filter box
-        assert ext_filter_input  # Verify that the value isn't False, zero, an empty string or None
+        #assert ext_filter_input  # Verify that the value isn't False, zero, an empty string or None
+        if ext_filter_input == "" or ext_filter_input == placeholder_text:
+            messagebox.showerror("Invalid Input", "You didn't submit anything.")
+            ext_entry_field.delete(0, tk.END)
+            ext_entry_field.config(fg="black")
+            return
         if len(ext_filter_input) < 3:
             raise Exception
 
@@ -200,6 +206,7 @@ def get_path_from_text():
 def get_path_from_button():  # Function to get/set the working directory
     try:
         path = filedialog.askdirectory()
+        assert path
         if os.path.exists(path):
             # os.chdir(path) UNCOMMENT WHEN READY TO START TESTING
             path_entry_box.delete(0, tk.END)
@@ -207,8 +214,8 @@ def get_path_from_button():  # Function to get/set the working directory
             console_print(f" > Target Directory: {path_entry_box.get().strip()}")
         else:
             messagebox.showerror(title="Error", message="That is not a valid path.")
-    except TypeError:  # Handles when you close the file manager window without picking a path
-        pass
+    except AssertionError:
+        return
 
 
 def show_verbose_val():  # Function to set the verbose value
@@ -227,12 +234,12 @@ def show_verbose_val():  # Function to set the verbose value
 def set_placeholder_text(event):
     """Set the placeholder text if the entry is empty."""
     if ext_entry_field.get() == "":
-        ext_entry_field.insert(0, "  Separate by space for multiple entries")
+        ext_entry_field.insert(0, placeholder_text)
         ext_entry_field.config(fg='gray')  # Placeholder color
 
 def remove_placeholder_text(event):
     """Remove the placeholder text when the entry is focused."""
-    if ext_entry_field.get() == "  Separate by space for multiple entries":
+    if ext_entry_field.get() == placeholder_text:
         ext_entry_field.delete(0, tk.END)
         ext_entry_field.config(fg='black')  # Change text color when the user types
 
@@ -275,11 +282,13 @@ def return_key_path_entry(event):
     if path: # Don't print to the console if the returned value is 0 or None
         console_print(f" > Target Directory: {path}")
 
+
+# ======================================================================================================================
 # Window Initialization
 root = tk.Tk()
 
 # Window Config Parameters
-root.geometry("1000x700")
+root.geometry("700x850")
 root.resizable(True, True)
 root.title("File-Renamer.py")
 root_icon = tk.PhotoImage(file="assets/icon.png")
@@ -291,8 +300,20 @@ logo_png = tk.PhotoImage(file="assets/main_app_logo.png")
 path_icon_file = tk.PhotoImage(file="assets/icon_small.png")
 #path_icon_resized = path_icon_large.subsample(24, 24)
 
-logo_label = MyLabel(image=logo_png, layout_kwargs={"row": 0, "column": 0, "pady": 25})
-path_border_frame = MyLabelFrame(text="Directory", layout_kwargs={"row": 1, "column": 0, "padx": 50, "pady": 15,
+window = ttk.Notebook(root)
+tab1 = tk.Frame(window)
+tab2 = tk.Frame(window)
+tab3 = tk.Frame(window)
+window.add(tab1,text="Main")
+window.add(tab2,text="Documentation")
+window.add(tab3,text="Credits")
+window.pack(expand=True,fill="both")
+#window.grid(row=0, column=0)
+#, expand=True,fill="both")  #Expand = expand to fill any space not otherwise used. Fill = fill space on x and
+                                      # y axis
+
+logo_label = MyLabel(tab1, image=logo_png, layout_kwargs={"row": 0, "column": 0, "pady": 25})
+path_border_frame = MyLabelFrame(tab1, text="Directory", layout_kwargs={"row": 1, "column": 0, "padx": 50, "pady": 15,
                                                                   "ipadx": 10, "ipady": 5, "sticky": "w"})
 path_label = MyLabel(path_border_frame, text="Path:", layout_kwargs={"row": 0, "column": 0, "padx": 5})
 path_entry_box = MyEntry(path_border_frame, width=50, layout_kwargs={"row": 0, "column": 1, "padx": 5})
@@ -305,7 +326,7 @@ verbose_mode_checkbox = MyCheckButton(path_border_frame, text="Generate a log fi
                                       layout_kwargs={"row": 1, "column": 1, "padx": 0, "pady": 5})
 verbose_button_value.set(1)  # Set the default state of the verbose button to be on
 
-filters_border_frame = MyLabelFrame(text="Apply To", layout_kwargs={"row": 2, "column": 0, "padx": 50, "pady": 15,
+filters_border_frame = MyLabelFrame(tab1, text="Apply To", layout_kwargs={"row": 2, "column": 0, "padx": 50, "pady": 15,
                                                                     "ipadx": 14, "ipady": 10, "sticky": "w"})
 ext_filter_status = tk.StringVar(value="disable")
 apply_all_radio_button = MyRadioButton(filters_border_frame, text="All Files", variable=ext_filter_status,
@@ -327,8 +348,10 @@ ext_list_label = MyLabel(filters_border_frame, text="Filter List:", layout_kwarg
 ext_display_list = MyLabel(filters_border_frame, border=1, bg=LightTheme.text_box_color, relief=SUNKEN, width=25,
                            layout_kwargs={"row": 3, "column": 1, "padx": 5, "pady": 10})
 
-console_window = MyScrolledTextBox(layout_kwargs={"row": 3, "column": 0, "padx": 50, "pady": 15, "sticky": "w"})
-start_button = MyButton(text="Start", command=run_program, padx=50)  # Run the main function to rename the files
+console_window = MyScrolledTextBox(tab1, layout_kwargs={"row": 3, "column": 0, "padx": 50, "pady": 15, "sticky": "w"})
+start_button = MyButton(tab1, text="Start", command=run_program, padx=50)  # Run the main function to rename the files
+
+# ======================================================================================================================
 
 # Key Bindings
 root.bind("<Return>", return_key_bind)  # Bind the return key
@@ -340,11 +363,13 @@ ext_entry_field.bind("<FocusIn>", remove_placeholder_text)
 ext_entry_field.bind("<FocusOut>", set_placeholder_text)
 console_window.bind("<Key>", lambda x: "break")
 path_entry_box.bind("<Return>", return_key_path_entry)
+
 console_print("\n ========== FILE RENAMER ==========\n")
 # Set the placeholder initially
 set_placeholder_text(None)
 apply_filters()
 
+# ======================================================================================================================
 
 '''
 console_print("\n ========== BEGIN RENAME PROCESS ==========\n")
@@ -366,3 +391,9 @@ else:
     print('Run main.py directly, it is not a module.')
 
 # BUGS -----------------------------------------------------------------------------------------------------------------
+
+# FEATURES TO ADD ------------------------------------------------------------------------------------------------------
+#   Secondary page with license, liability warning, credits, bug report button/link, GitHub page button/link, support
+#   FOSS message - Include some of this stuff in GitHub readme file.
+#
+#
