@@ -24,8 +24,8 @@ def run_program():
     start_button.config(state=tk.DISABLED) # Disable the start button while the program is running
     # Confirm that the user wants to run the program to rename the files (Yes returns True, No returns False)
     # Have a display message/pop-up if no files in the path contain the file extension
-    # Allow the user to select a number of options to edit the file names and have separate functions for each process, and
-    # a way to process them one by one or reject them if they don't apply.
+    # Allow the user to select a number of options to edit the file names and have separate functions for each process,
+    # and a way to process them one by one or reject them if they don't apply.
     path = get_path_from_text() # Get the file path
     if not path: # If the file path returned is invalid
         start_button.config(state=tk.NORMAL)  # Re-enable the start button after the program finishes
@@ -117,6 +117,7 @@ def add_extension():
 
     finally:
         ext_entry_remove()
+        ext_entry_field.config(fg="black")  # Return entry box input text to black after errors
 
     # Split multiple entries by whitespace, remove duplicates from input
     extensions = ext_filter_input.split()  # Add entries to temporary list to further process
@@ -155,6 +156,8 @@ def add_extension():
 
         except Exception as e:
             messagebox.showerror(title="Unexpected Error", message=f"An unexpected error occurred: {e}")
+        finally:
+            ext_entry_field.config(fg="black")  # Return entry box input text to black after errors
 
     # Update display
     display_text = ", ".join(extension_list)
@@ -242,8 +245,8 @@ def apply_filters():  # Function to apply search filters
         ext_display_clear.config(state=tk.DISABLED)
         ext_display_remove.config(state=tk.DISABLED)
         ext_list_label.config(state=tk.DISABLED)
-        ext_display_list.config(bg="lightgrey")
-        console_print(" > Renaming all files")
+        ext_display_list.config(bg="lightgrey", fg="lightgray")
+        console_print(" > Renaming all files in the directory")
     else:  # Filter By Extension
         ext_entry_label.config(state=tk.NORMAL)
         ext_entry_field.config(state=tk.NORMAL)
@@ -258,8 +261,8 @@ def apply_filters():  # Function to apply search filters
         ext_display_clear.config(state=tk.NORMAL)
         ext_display_remove.config(state=tk.NORMAL)
         ext_list_label.config(state=tk.NORMAL)
-        ext_display_list.config(bg=LightTheme.text_box_color)
-        console_print(" > Filtering by extension")
+        ext_display_list.config(bg=LightTheme.text_box_color, fg="black")
+        console_print(" > Renaming files filtered by extension")
 
 def console_print(message):
     console_window.config(state=tk.NORMAL)      # enable editing
