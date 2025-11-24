@@ -1,9 +1,7 @@
 from tkinter.scrolledtext import ScrolledText
-
-from wx.lib.agw.speedmeter import styles
-
-from .styles import *
+from modules import styles
 import tkinter as tk
+#import state
 
 # Add relevant arguments/parameters for specific widgets, example: active fg/bg for buttons, size/geometry for buttons/labels etc...
 # Add defaults (kwargs) and layout/layout kwargs to styles file and import them into here to use so that i don't need to update each
@@ -31,8 +29,8 @@ class MyLabel(tk.Label, Positioning):
             parent = tk._default_root   # Tkinter automatically tracks `root`
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
-            "bg": LightTheme.window_bg_color,
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
+            "bg": styles.LightTheme.window_bg_color,
             "fg": "black",
             "highlightthickness": 0
         }
@@ -42,6 +40,7 @@ class MyLabel(tk.Label, Positioning):
 
         # Now apply automatic layout
         self._apply_layout(layout, layout_kwargs)
+        #state.self = self
 
 class MyLabelFrame(tk.LabelFrame, Positioning):
     def __init__(self, parent=None, text="", layout="grid", layout_kwargs=None, **kwargs):
@@ -50,8 +49,8 @@ class MyLabelFrame(tk.LabelFrame, Positioning):
             parent = tk._default_root   # Tkinter automatically tracks `root`
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
-            "bg": LightTheme.window_bg_color,
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
+            "bg": styles.LightTheme.window_bg_color,
             "fg": "black"
         }
         defaults.update(kwargs)
@@ -67,9 +66,9 @@ class MyRadioButton(tk.Radiobutton, Positioning):
             parent = tk._default_root
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
-            "bg": LightTheme.window_bg_color,
-            "activebackground": LightTheme.window_bg_color,
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
+            "bg": styles.LightTheme.window_bg_color,
+            "activebackground": styles.LightTheme.window_bg_color,
             "highlightthickness": 0
         }
         defaults.update(kwargs)
@@ -84,8 +83,8 @@ class MyScrolledTextBox(ScrolledText, Positioning):
 
         defaults = {
             "width": "64",
-            "height": "5",
-            "font": (LightTheme.console_font_style, LightTheme.font_size),
+            "height": "8",
+            "font": (styles.LightTheme.console_font_style, styles.LightTheme.font_size),
             "bg": "black",
             "fg": "#00BB00",
             "insertbackground": "#00BB00",
@@ -102,7 +101,7 @@ class MyButton(tk.Button, Positioning):
             parent = tk._default_root
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
             "bg": "#D9D9D9",
             "activebackground": "#D9D9D9",
             "fg": "black",
@@ -119,9 +118,9 @@ class MyCheckButton(tk.Checkbutton, Positioning):
             parent = tk._default_root
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
-            "bg": LightTheme.window_bg_color,
-            "activebackground": LightTheme.window_bg_color,
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
+            "bg": styles.LightTheme.window_bg_color,
+            "activebackground": styles.LightTheme.window_bg_color,
             "fg": "black",
             "highlightthickness": 0
         }
@@ -136,8 +135,8 @@ class MyEntry(tk.Entry, Positioning):
             parent = tk._default_root
 
         defaults = {
-            "font": (LightTheme.font_style, LightTheme.font_size),
-            "bg": LightTheme.text_box_color,
+            "font": (styles.LightTheme.font_style, styles.LightTheme.font_size),
+            "bg": styles.LightTheme.text_box_color,
             "fg": "black",
             "width": 50
         }
