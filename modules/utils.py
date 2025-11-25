@@ -1,4 +1,4 @@
-from modules import state
+from modules import state, styles
 import tkinter as tk
 from tkinter import messagebox, filedialog
 import datetime, time, os
@@ -12,12 +12,16 @@ def run_program():
     # Allow the user to select a number of options to edit the file names and have separate functions for each process,
     # and a way to process them one by one or reject them if they don't apply.
     path = get_path_from_text() # Get the file path
-    state.log_path = log_file_path_status()
-
     # os.chdir(path) UNCOMMENT WHEN READY TO START TESTING
     if not path: # If the file path returned is invalid
         state.start_button.config(state=tk.NORMAL)  # Re-enable the start button after the program finishes
         return # Exit the run_program function
+
+    log_file_path_status()
+    if not state.log_path:
+        state.start_button.config(state=tk.NORMAL)  # Re-enable the start button after the program finishes
+        return
+
     console_print(f"\n > Confirming the path:\n > Target Directory: {state.path_entry_box.get().strip()}")
     '''
         if len(state.ext_display_list) > 0:
@@ -162,7 +166,7 @@ def get_path_from_text():
         pass
     except Exception as e:
         messagebox.showerror(title="Error", message=f"Something went wrong: {e}")
-        return 0
+        return None
 
 def get_path_from_button():  # Function to get/set the working directory
     try:
@@ -181,10 +185,7 @@ def get_path_from_button():  # Function to get/set the working directory
 def show_log_val():  # Function to set the verbose value
     if state.log_button_value.get():
         state.verbose = True
-        if state.path_entry_box.get() != state.path_placeholder_text:
-            console_print(f" > Generating a log file in {state.path_entry_box.get()} directory.")
-        else:
-            console_print(" > Generating a log file")
+        console_print(" > Generating a log file")
     else:
         state.verbose = False
         console_print(" > Opted out of logging")
@@ -205,11 +206,16 @@ def get_log_path_from_text():
                 return state.custom_log_location_entry_box.get().strip()
             else:
                 messagebox.showerror(title="Error", message="Path is not valid")
+                state.custom_log_location_entry_box.config(state=tk.NORMAL)
+                state.custom_log_location_entry_box.config(bg=styles.LightTheme.text_box_color, fg="black")
+                return None
     except TypeError:
         pass
     except Exception as e:
         messagebox.showerror(title="Error", message=f"Something went wrong: {e}")
-        return 0
+        state.custom_log_location_entry_box.config(state=tk.NORMAL)
+        state.custom_log_location_entry_box.config(bg=styles.LightTheme.text_box_color, fg="black")
+        return None
 
 def get_log_path_from_button():  # Function to get/set the working directory
     try:
@@ -219,7 +225,7 @@ def get_log_path_from_button():  # Function to get/set the working directory
             state.custom_log_location_entry_box.config(fg="black")
             state.custom_log_location_entry_box.delete(0, tk.END)
             state.custom_log_location_entry_box.insert(0, path)
-            console_print(f" > Log file location: {state.custom_log_location_entry_box.get().strip()}")
+            console_print(f" > Log file location: {state.custom_log_location_entry_box.get()}")
         else:
             messagebox.showerror(title="Error", message="That is not a valid path.")
     except AssertionError:

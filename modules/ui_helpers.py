@@ -22,6 +22,10 @@ def path_entry_box_focus(event):
     if event.widget == state.path_entry_box:
         state.path_entry_box.focus_set()
 
+def log_path_entry_box_focus(event):
+    if event.widget == state.custom_log_location_entry_box:
+        state.custom_log_location_entry_box.focus_set()
+
 def quit_program(event):
     if messagebox.askyesno(title='Close Program',
                            message="The ESC key was pressed, do you wish the close the program?"):  # Returns True if
@@ -59,7 +63,7 @@ def set_custom_log_path_placeholder_text(event):
 
 def remove_custom_log_path_placeholder_text(event):
     if state.custom_log_location_entry_box.get() == state.custom_log_path_placeholder_text:
-        state.custom_log_location_entry_box.insert(0, tk.END)
+        state.custom_log_location_entry_box.delete(0, tk.END)
         state.custom_log_location_entry_box.config(fg='black')
 
 def apply_filters():  # Function to apply search filters
@@ -91,25 +95,33 @@ def apply_filters():  # Function to apply search filters
         utils.console_print(" > Renaming files using extension filter(s)")
 
 def log_file_radio_buttons_status():
-    utils.show_log_val()
-    if state.log_button_value.get() == 1:
+    #utils.show_log_val()
+    if state.log_button_value.get():
         state.log_file_same_path.config(state=tk.NORMAL)
         state.log_file_custom_path.config(state=tk.NORMAL)
-        if state.log_file_location_var == "custom":
+        if state.log_file_location_var.get() == "custom":
             state.custom_log_location_entry_box.config(state=tk.NORMAL)
-            state.custom_log_location_entry_box.config(bg=styles.LightTheme.text_box_color, fg="black")
-            utils.console_print(f" > Log file location: {utils.log_file_path_status()}")
-        elif state.log_file_location_var.get() == "default":
+            state.custom_log_location_entry_box.config(bg = styles.LightTheme.text_box_color)
+            state.custom_log_path_button.config(state=tk.NORMAL)
+            #utils.console_print(f" > Log file location: {utils.log_file_path_status()}")
+            # If placeholder text is active → keep gray, else set black
+            if state.ext_entry_field.get() == state.custom_log_path_placeholder_text:
+                state.ext_entry_field.config(fg="gray")
+            else:
+                state.ext_entry_field.config(fg="black")
+        else:
             state.log_file_same_path.config(state=tk.NORMAL)
             state.log_file_custom_path.config(state=tk.NORMAL)
             state.custom_log_location_entry_box.config(state=tk.DISABLED)
-            state.custom_log_location_entry_box.config(bg="lightgrey", fg="lightgray")
+            state.custom_log_location_entry_box.config(fg="grey")
+            state.custom_log_path_button.config(state=tk.DISABLED)
             utils.console_print(f" > Log file location: {utils.get_path_from_text()}")
     else:
         state.log_file_same_path.config(state=tk.DISABLED)
         state.log_file_custom_path.config(state=tk.DISABLED)
-        state.custom_log_location_entry_box.config(state=tk.DISABLED, bg="lightgray", fg="lightgray")
-        state.custom_log_location_entry_box.config(bg="lightgrey", fg="lightgray")
+        state.custom_log_location_entry_box.config(state=tk.DISABLED)
+        state.custom_log_path_button.config(state=tk.DISABLED)
+        #state.custom_log_location_entry_box.config(fg="grey")
 
 
 def return_key_path_entry(event):

@@ -83,7 +83,7 @@ log_file_same_path = widgets.MyRadioButton(path_border_frame, text="Place log fi
 state.log_file_same_path = log_file_same_path
 log_file_custom_path = widgets.MyRadioButton(path_border_frame, text="Place log file in an alternate location", variable=log_file_location_var, value="custom", command=ui_helpers.log_file_radio_buttons_status, layout_kwargs={"row": 3, "column": 0, "columnspan": 2, "padx": 5})
 state.log_file_custom_path = log_file_custom_path
-custom_log_location_entry_box = widgets.MyEntry(path_border_frame, width=50, layout_kwargs={"row": 4, "column": 0, "columnspan": 2, "padx": 5})
+custom_log_location_entry_box = widgets.MyEntry(path_border_frame, width=50, layout_kwargs={"row": 4, "column": 1, "columnspan": 1, "padx": 5})
 state.custom_log_location_entry_box = custom_log_location_entry_box
 custom_log_path_button = widgets.MyButton(path_border_frame, image=path_icon_file, command=utils.get_log_path_from_button, border=None, bg=styles.LightTheme.window_bg_color, layout_kwargs={"row": 4, "column": 2, "padx": 5})
 state.custom_log_path_button = custom_log_path_button
@@ -161,13 +161,14 @@ console_window.bind("<Key>", lambda x: "break")
 path_entry_box.bind("<Return>", ui_helpers.return_key_path_entry)
 path_entry_box.bind("<FocusIn>", ui_helpers.remove_path_placeholder_text)
 path_entry_box.bind("<FocusOut>", ui_helpers.set_path_placeholder_text)
-custom_log_location_entry_box.bind("<FocusIn>", ui_helpers.set_custom_log_path_placeholder_text)
-custom_log_location_entry_box.bind("<FocusOut>", ui_helpers.remove_custom_log_path_placeholder_text)
+custom_log_location_entry_box.bind("<FocusIn>", ui_helpers.remove_custom_log_path_placeholder_text)
+custom_log_location_entry_box.bind("<FocusOut>", ui_helpers.set_custom_log_path_placeholder_text)
 
 utils.console_print("\n ========== FILE RENAMER CONSOLE ===============\n")
 # Set the placeholder initially
 ui_helpers.set_ext_placeholder_text(None)
 ui_helpers.set_path_placeholder_text(None)
+ui_helpers.set_custom_log_path_placeholder_text(None)
 ui_helpers.apply_filters()
 #if state.verbose:
     #utils.console_print(" > Generating a log file")
