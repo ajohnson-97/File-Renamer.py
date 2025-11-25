@@ -9,8 +9,9 @@ Written by Anthony Johnson
 
 # THINGS TO ADD IN FUTURE UPDATES:
 - Add regex parameters for renaming filters
-- Bug report/credit page in GUI
 
 # BUGS/ISSUES TO FIX:
 - Improve readability with comments and better variable names
-- Modularize functions to secondary file -> app_utils.py and import into main.py
+- Rewrite/refactor log file path widgets/functions.
+    - Replace check button/dual radio buttons with two check buttons only for controlling the log path
+      - 1st is generate a file true/false and default path is the working directory, second is choose a custom path which will override option 1 if selected.
